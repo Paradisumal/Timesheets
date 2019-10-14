@@ -25,17 +25,24 @@ namespace RebootIT.TimesheetApp.Controllers
             return View(await timesheetDbContext.ToListAsync());
         }
 
-        // GET: Timesheet (filtered staff)
+        // GET: Timesheet (filtered by StaffId)
         public async Task<IActionResult> StaffFilteredIndex(int? id)
         {
             var timesheetDbContext = _context.Timesheets.Include(t => t.Client).Include(t => t.Location).Include(t => t.Staff).Where(t => t.StaffId == id);
             return View("Index", await timesheetDbContext.ToListAsync());
         }
 
-        // GET: Timesheet (filtered client)
+        // GET: Timesheet (filtered by ClientId)
         public async Task<IActionResult> ClientFilteredIndex(int? id)
         {
-            var timesheetDbContext = _context.Timesheets.Include(t => t.Client).Include(t => t.Location).Include(t => t.Staff).Where(t => t.StaffId == id);
+            var timesheetDbContext = _context.Timesheets.Include(t => t.Client).Include(t => t.Location).Include(t => t.Staff).Where(t => t.ClientId == id);
+            return View("Index", await timesheetDbContext.ToListAsync());
+        }
+
+        // GET: Timesheet (filtered by LocationId)
+        public async Task<IActionResult> LocationFilteredIndex(int? id)
+        {
+            var timesheetDbContext = _context.Timesheets.Include(t => t.Client).Include(t => t.Location).Include(t => t.Staff).Where(t => t.LocationId == id);
             return View("Index", await timesheetDbContext.ToListAsync());
         }
 
