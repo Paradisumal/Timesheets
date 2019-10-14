@@ -1,4 +1,4 @@
-﻿@model IEnumerable<RebootIT.TimesheetApp.Data.Timesheet>
+﻿@model RebootIT.TimesheetApp.ViewModels.TimeSheets.Index
 
 @{
     ViewData["Title"] = "Index";
@@ -7,28 +7,28 @@
 <h2>Index</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" asp-items=Id asp-route-staffId="@Model.StaffId">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Client)
+                @Html.DisplayNameFor(model => model.Timesheets.FirstOrDefault().Client)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Staff)
+                @Html.DisplayNameFor(model => model.Timesheets.FirstOrDefault().Staff)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Location)
+                @Html.DisplayNameFor(model => model.Timesheets.FirstOrDefault().Location)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MinutesWorked)
+                @Html.DisplayNameFor(model => model.Timesheets.FirstOrDefault().MinutesWorked)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Timesheets) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Client.CompanyName)

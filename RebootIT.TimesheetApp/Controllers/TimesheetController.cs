@@ -26,10 +26,17 @@ namespace RebootIT.TimesheetApp.Controllers
         }
 
         // GET: Timesheet (filtered by StaffId)
-        public async Task<IActionResult> StaffFilteredIndex(int? id)
+        public async Task<IActionResult> StaffFilteredIndex(int id)
         {
             var timesheetDbContext = _context.Timesheets.Include(t => t.Client).Include(t => t.Location).Include(t => t.Staff).Where(t => t.StaffId == id);
-            return View("Index", await timesheetDbContext.ToListAsync());
+
+            var indexVm = new RebootIT.TimesheetApp.ViewModels.TimeSheets.Index(
+                await timesheetDbContext.ToListAsync(),
+                0,
+                0,
+                id);
+
+            return View("Index", indexVm);
         }
 
         // GET: Timesheet (filtered by ClientId)
@@ -68,11 +75,16 @@ namespace RebootIT.TimesheetApp.Controllers
         }
 
         // GET: Timesheet/Create
-        public IActionResult Create()
+        public IActionResult Create(int? staffId)
         {
             ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "CompanyName");
             ViewData["StaffId"] = new SelectList(_context.Staff, "Id", "Email");
             ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name");
+
+            var timesheet = new Timesheet() {
+                StaffId = staffId.HasValue ? staffId.Value : 0
+            };
+
             return View();
         }
 
