@@ -15,5 +15,7 @@ namespace RebootIT.TimesheetApp.Data
         public string Forename { get; set; }
         [Required]
         public string Email { get; set; }
+
+        public string Fullname { get { return Forename + " " + Surname; } }
     }
 }
