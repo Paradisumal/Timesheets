@@ -7,7 +7,7 @@
 <h2>Index</h2>
 
 <p>
-    <a asp-action="Create" asp-items=Id>Create New</a>
+    <a asp-action="ClientFilteredCreate" asp-items=Id asp-route-clientId="@Model.ClientId">Create New</a>
 </p>
 <table class="table">
     <thead>

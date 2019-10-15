@@ -22,7 +22,14 @@ namespace RebootIT.TimesheetApp.Controllers
         public async Task<IActionResult> Index()
         {
             var timesheetDbContext = _context.Timesheets.Include(t => t.Client).Include(t => t.Location).Include(t => t.Staff);
-            return View(await timesheetDbContext.ToListAsync());
+
+            var indexVm = new RebootIT.TimesheetApp.ViewModels.TimeSheets.Index(
+                await timesheetDbContext.ToListAsync(),
+                0,
+                0,
+                0);
+
+            return View("Index", indexVm);
         }
 
         // GET: Timesheet (filtered by StaffId)
@@ -36,21 +43,35 @@ namespace RebootIT.TimesheetApp.Controllers
                 0,
                 id);
 
-            return View("Index", indexVm);
+            return View("StaffIndex", indexVm);
         }
 
         // GET: Timesheet (filtered by ClientId)
-        public async Task<IActionResult> ClientFilteredIndex(int? id)
+        public async Task<IActionResult> ClientFilteredIndex(int id)
         {
             var timesheetDbContext = _context.Timesheets.Include(t => t.Client).Include(t => t.Location).Include(t => t.Staff).Where(t => t.ClientId == id);
-            return View("Index", await timesheetDbContext.ToListAsync());
+
+            var indexVm = new RebootIT.TimesheetApp.ViewModels.TimeSheets.Index(
+                await timesheetDbContext.ToListAsync(),
+                id,
+                0,
+                0);
+
+            return View("ClientIndex", indexVm);
         }
 
         // GET: Timesheet (filtered by LocationId)
-        public async Task<IActionResult> LocationFilteredIndex(int? id)
+        public async Task<IActionResult> LocationFilteredIndex(int id)
         {
             var timesheetDbContext = _context.Timesheets.Include(t => t.Client).Include(t => t.Location).Include(t => t.Staff).Where(t => t.LocationId == id);
-            return View("Index", await timesheetDbContext.ToListAsync());
+
+            var indexVm = new RebootIT.TimesheetApp.ViewModels.TimeSheets.Index(
+                await timesheetDbContext.ToListAsync(),
+                0,
+                id,
+                0);
+
+            return View("LocationIndex", indexVm);
         }
 
         // GET: Timesheet/Details/5
@@ -75,17 +96,58 @@ namespace RebootIT.TimesheetApp.Controllers
         }
 
         // GET: Timesheet/Create
-        public IActionResult Create(int? staffId)
+        public IActionResult Create()
         {
             ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "CompanyName");
             ViewData["StaffId"] = new SelectList(_context.Staff, "Id", "Email");
             ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name");
 
-            var timesheet = new Timesheet() {
+            return View();
+        }
+
+        // GET: Timesheet/Create (Filtered by staff)
+        public IActionResult StaffFilteredCreate(int? staffId)
+        {
+            ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "CompanyName");
+            ViewData["StaffId"] = new SelectList(_context.Staff, "Id", "Email");
+            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name");
+
+            var timesheet = new Timesheet()
+            {
                 StaffId = staffId.HasValue ? staffId.Value : 0
             };
 
-            return View();
+            return View("Create");
+        }
+
+        // GET: Timesheet/Create (Filtered by client)
+        public IActionResult ClientFilteredCreate(int? clientId)
+        {
+            ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "CompanyName");
+            ViewData["StaffId"] = new SelectList(_context.Staff, "Id", "Email");
+            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name");
+
+            var timesheet = new Timesheet()
+            {
+                ClientId = clientId.HasValue ? clientId.Value : 0
+            };
+
+            return View("Create");
+        }
+
+        // GET: Timesheet/Create (Filtered by location)
+        public IActionResult LocationFilteredCreate(int? locationId)
+        {
+            ViewData["ClientId"] = new SelectList(_context.Clients, "Id", "CompanyName");
+            ViewData["StaffId"] = new SelectList(_context.Staff, "Id", "Email");
+            ViewData["LocationId"] = new SelectList(_context.Locations, "Id", "Name");
+
+            var timesheet = new Timesheet()
+            {
+                LocationId = locationId.HasValue ? locationId.Value : 0
+            };
+
+            return View("Create");
         }
 
         // POST: Timesheet/Create
